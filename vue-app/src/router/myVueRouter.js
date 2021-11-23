@@ -57,10 +57,17 @@ VueRouter.install = function(Vue) {
         this._root = this.$parent && this.$parent._root
       }
 
-      // 数据代理
+      // 数据代理, 实现$router, 达到每个组件中能使用 this.$router
       Object.defineProperty(this, '$router', {
         get() {
           return this._root._router
+        }
+      })
+
+      // 实现$route, 达到每个组件中能使用this.$route
+      Object.defineProperty(this, '$route', {
+        get() {
+          return this._root._router.history.current
         }
       })
     }

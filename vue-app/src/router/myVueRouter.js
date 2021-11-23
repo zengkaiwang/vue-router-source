@@ -1,5 +1,48 @@
-class VueRouter {
 
+class HistoryRoute {
+  constructor() {
+    this.current = null
+  }
+}
+class VueRouter {
+  constructor(options) {
+    this.mode = options.mode || 'hash'
+    this.routes = options.routes || [] // //你传递的这个路由是一个数组表
+    this.routesMap = this.createMap(this.routes)
+    console.log(this.routesMap)
+
+    this.history = new HistoryRoute()
+    this.init()
+  }
+
+  init() {
+    if(this.mode == 'hash') {
+      // 先判断用户打开时,有没有hash值,没有则跳转到#
+      location.hash ? '' : location.hash = '/'
+      window.addEventListener('load', () => {
+        this.history.current = location.hash.slice(1)
+      })
+      window.addEventListener('hashchange', () => {
+        this.history.current = location.hash.slice(1)
+      })
+    } else {
+      location.pathname ? '' : location.pathname = '/'
+      window.addEventListener('load', () => {
+        this.history.current = location.pathname
+      })
+      window.addEventListener('popstate', () => {
+        this.history.current = location.pathname
+      })
+    }
+  }
+
+  // 转换成key：value的格式
+  createMap(routes) {
+    return routes.reduce((pre, current) => {
+      pre[current.path] = current.component
+      return pre
+    }, {})
+  }
 }
 
 VueRouter.install = function(Vue) {

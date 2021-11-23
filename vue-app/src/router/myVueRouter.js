@@ -78,8 +78,13 @@ VueRouter.install = function (Vue) {
 
   // 然后再通过传进来的Vue创建两个组件router-link和router-view
   Vue.component('router-link', {
+    props: {
+      to: String,
+    },
     render(h) {
-      return h('a', {}, '首页')
+      let mode = this._self._root._router.mode
+      let to = mode === 'hash' ? '#' + this.to : this.to
+      return h('a', { attrs: { href: to } }, this.$slots.default)
     },
   })
 
